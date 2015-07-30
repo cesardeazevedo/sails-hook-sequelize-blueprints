@@ -2,7 +2,7 @@ module.exports.connections = {
 
 
     somePostgresqlServer: {
-        user: 'iCesar',
+        user: process.env.USER || 'postgres',
         password: '',
         database: 'sequelize',
         dialect: 'postgres',

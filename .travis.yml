@@ -4,7 +4,7 @@ node_js:
 addons:
   postgresql: "9.3"
 before_install:
-  - psql -c 'create database sequelize;' -U iCesar
+  - psql -c 'create database sequelize;' -U postgres
   - 'npm install'
 script:
   - 'npm test'
