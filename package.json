@@ -7,7 +7,7 @@
     "isHook": true
   },
   "scripts": {
-    "test": "mocha test/bootstrap.test.js test/unit/**/*.test.js"
+    "test": "./node_modules/mocha/bin/mocha test/bootstrap.test.js test/unit/**/*.test.js"
   },
   "keywords": [
     "sails",
