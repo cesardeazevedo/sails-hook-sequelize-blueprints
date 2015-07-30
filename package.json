@@ -1,0 +1,49 @@
+{
+  "name": "sails-hook-sequelize-blueprints",
+  "version": "0.0.1",
+  "description": "Sails blueprints with sequelize",
+  "main": "index.js",
+  "sails": {
+    "isHook": true
+  },
+  "scripts": {
+    "test": "mocha test/bootstrap.test.js test/unit/**/*.test.js"
+  },
+  "keywords": [
+    "sails",
+    "sequelize",
+    "blueprints"
+  ],
+  "author": "Cesar Augusto D. Azevedo",
+  "license": "MIT",
+  "devDependencies": {
+    "pg": "^4.4.0",
+    "pg-hstore": "^2.3.2",
+    "root-require": "^0.3.1",
+    "sails": "^0.11.0",
+    "sails-disk": "^0.10.8",
+    "should": "^7.0.2",
+    "supertest": "^1.0.1"
+  },
+  "dependencies": {
+    "async": "^1.4.0",
+    "continuation-local-storage": "^3.1.4",
+    "lodash": "^3.10.0",
+    "merge-defaults": "^0.2.1",
+    "pluralize": "^1.1.2",
+    "sails-stringfile": "^0.3.2",
+    "sails-util": "^0.10.6",
+    "sequelize": "^3.5.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cesardeazevedo/sails-hook-sequelize-blueprints.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints/issues"
+  },
+  "homepage": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints"
+}
