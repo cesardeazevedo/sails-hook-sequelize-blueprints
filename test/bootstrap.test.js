@@ -15,7 +15,6 @@ describe('Basic tests ::', function() {
     // Attempt to lift sails
     Sails().lift({
       hooks: {
-        "_beforeAllHooks": require('./fixtures/sampleapp/api/hooks/_beforeAllHooks'),
         "sequelize": require('./fixtures/sampleapp/api/hooks/sequelize'),
         // Load the hook
         "sails-hook-sequelize-blueprint": require('../'),

@@ -15,7 +15,7 @@ module.exports = {
             type: Sequelize.INTEGER
         }
     },
-    associate: function() {
+    associations: function() {
       user.hasMany(image, {
           onDelete: 'cascade',
           foreignKey: {

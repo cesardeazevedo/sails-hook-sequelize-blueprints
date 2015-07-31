@@ -11,7 +11,7 @@ module.exports = {
             type: Sequelize.STRING
         }
     },
-    associate: function() {
+    associations: function() {
         image.belongsTo(user, {
             onDelete: 'cascade',
             foreignKey: 'owner'
