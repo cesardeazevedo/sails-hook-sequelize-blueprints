@@ -333,14 +333,14 @@ module.exports = function(sails) {
             _bindRoute(_getRoute('%s/destroy/:id?'), 'destroy');
 
             // Bind add/remove "shortcuts" for each `collection` associations
-            _(Model.associations).where({type: 'collection'}).forEach(function (association) {
-              var alias = association.alias;
+            _.mapKeys(Model.associations, function(value){
+              var foreign = value.options.foreignKey;
+              var alias = foreign.as || foreign.name || foreign;
               var _getAssocRoute = _.partialRight(util.format, baseRoute, alias);
-              var opts = _.merge({ alias: alias }, routeOpts);
-
-              sails.log.silly('Binding "shortcuts" to association blueprint `'+alias+'` for',controllerId);
-              _bindRoute( _getAssocRoute('%s/:parentid/%s/add/:id?'),      'add' , opts );
-              _bindRoute( _getAssocRoute('%s/:parentid/%s/remove/:id?'),   'remove', opts );
+              var opts = _.merge({ alias: alias, target: value.target.name }, routeOpts);
+              sails.log.verbose('Binding "shortcuts" to association blueprint `'+alias+'` for',controllerId);
+              _bindRoute(_getAssocRoute('%s/:parentid/%s/add/:id?'), 'add', opts);
+              _bindRoute(_getAssocRoute('%s/:parentid/%s/remove/:id?'), 'remove', opts);
             });
           }
 
@@ -357,21 +357,23 @@ module.exports = function(sails) {
 
             // Bind "rest" blueprint/shadow routes based on known associations in our model's schema
             // Bind add/remove for each `collection` associations
-            _(Model.associations).where({type: 'collection'}).forEach(function (association) {
-              var alias = association.alias;
+            _.mapKeys(Model.associations, function(value, key){
+              var foreign = value.options.foreignKey;
+              var alias = foreign.as || foreign.name || foreign;
               var _getAssocRoute = _.partialRight(util.format, baseRestRoute, alias);
-              var opts = _.merge({ alias: alias }, routeOpts);
-              sails.log.silly('Binding RESTful association blueprint `'+alias+'` for',controllerId);
+              var opts = _.merge({ alias: alias, target: value.target.name }, routeOpts);
+              sails.log('Binding RESTful association blueprint `'+alias+'` for',controllerId);
 
-              _bindRoute( _getAssocRoute('post %s/:parentid/%s/:id?'),     'add', opts );
-              _bindRoute( _getAssocRoute('delete %s/:parentid/%s/:id?'),   'remove', opts );
+              _bindRoute(_getAssocRoute('post %s/:parentid/%s/:id?'), 'add', opts);
+              _bindRoute(_getAssocRoute('delete %s/:parentid/%s/:id?'), 'remove', opts);
             });
 
             // and populate for both `collection` and `model` associations
-            _(Model.associations).forEach(function (association) {
-              var alias = association.alias;
+            _.mapKeys(Model.associations, function(value){
+              var foreign = value.options.foreignKey;
+              var alias = foreign.as || foreign.name || foreign;
               var _getAssocRoute = _.partialRight(util.format, baseRestRoute, alias);
-              var opts = _.merge({ alias: alias }, routeOpts);
+              var opts = _.merge({ alias: alias, target: value.target.name }, routeOpts);
               sails.log.silly('Binding RESTful association blueprint `'+alias+'` for',controllerId);
 
               _bindRoute( _getAssocRoute('get %s/:parentid/%s/:id?'), 'populate', opts );

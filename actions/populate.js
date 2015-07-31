@@ -46,20 +46,9 @@ module.exports = function expand(req, res) {
     }
   }
 
-  var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
-
-  var populate = sails.util.objCompact({
-    where: where,
-    skip: actionUtil.parseSkip(req),
-    limit: actionUtil.parseLimit(req),
-    sort: actionUtil.parseSort(req)
-  });
-
   Model
-    .findOne(parentPk)
-    .populate(relation, populate)
-    .exec(function found(err, matchingRecord) {
-      if (err) return res.serverError(err);
+    .findById(parentPk, { include: [{ all: true }] })
+    .then(function(matchingRecord) {
       if (!matchingRecord) return res.notFound('No record found with the specified id.');
       if (!matchingRecord[relation]) return res.notFound(util.format('Specified record (%s) is missing relation `%s`', parentPk, relation));
 
@@ -71,5 +60,7 @@ module.exports = function expand(req, res) {
       }
 
       return res.ok(matchingRecord[relation]);
+    }).catch(function(err){
+      return res.serverError(err);
     });
 };

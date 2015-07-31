@@ -22,16 +22,7 @@ module.exports = function findOneRecord (req, res) {
   var Model = actionUtil.parseModel(req);
   var pk = actionUtil.requirePk(req);
 
-  // var query = Model.findById(pk);
-
-  // sails.log('Query');
-  // sails.log(query);
-  // query = actionUtil.populateEach(query, req);
-  sails.log('PK');
-  sails.log(pk);
   Model.findById(pk).then(function(matchingRecord) {
-    sails.log('Result');
-    sails.log(matchingRecord);
     if(!matchingRecord) return res.notFound('No record found with the specified `id`.');
 
     if (sails.hooks.pubsub && req.isSocket) {

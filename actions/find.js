@@ -36,20 +36,13 @@ module.exports = function findRecords (req, res) {
   }
 
   // Lookup for records that match the specified criteria
-  Model.find({
+  Model.findAll({
     where: actionUtil.parseCriteria(req),
     limit: actionUtil.parseLimit(req),
     offset: actionUtil.parseSkip(req),
     order: actionUtil.parseSort(req),
     include: [{ all: true }]
-  })
-  // .where( actionUtil.parseCriteria(req) )
-  // .limit( actionUtil.parseLimit(req) )
-  // .skip( actionUtil.parseSkip(req) )
-  // .sort( actionUtil.parseSort(req) );
-  // TODO: .populateEach(req.options);
-  // query = actionUtil.populateEach(query, req);
-  .then(function(matchingRecords) {
+  }).then(function(matchingRecords) {
     // Only `.watch()` for new instances of the model if
     // `autoWatch` is enabled.
     if (req._sails.hooks.pubsub && req.isSocket) {
@@ -61,7 +54,7 @@ module.exports = function findRecords (req, res) {
       });
     }
 
-    res.ok(!matchingRecords ? {} : matchingRecords);
+    res.ok(matchingRecords);
   }).catch(function(err){
     return res.serverError(err);
   });
