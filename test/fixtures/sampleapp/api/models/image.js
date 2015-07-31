@@ -12,7 +12,10 @@ module.exports = {
         }
     },
     associate: function() {
-        image.belongsTo(user, { foreignKey: 'owner' });
+        image.belongsTo(user, {
+            onDelete: 'cascade',
+            foreignKey: 'owner'
+        });
     },
     options: {
         classMethods: {},
