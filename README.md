@@ -6,21 +6,12 @@ Sails blueprints for sequelize ORM
 
 The blueprints waterline replaced with sequelize.
 
-# Status
-
-Working with basics functionallities such as:
-
-```
-get / => find
-get /:id => findOne
-post / => create
-put /:id => update
-delete /:id => destroy
-```
-
-There's still an issues about add and removing collections that haven't been tested, [see issues.](https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints/issues)
-
 #Install
+
+Install [sails-hook-sequelize](https://github.com/festo/sails-hook-sequelize) first:
+```sh
+$ npm install sails-hook-sequelize --save
+```
 
 Install this hook with:
 
@@ -96,7 +87,7 @@ module.exports = {
       type: Sequelize.INTEGER
     }
   },
-  associate: function() {
+  associations: function() {
     user.hasMany(image, {
       foreignKey: {
         name: 'owner',
