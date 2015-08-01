@@ -41,7 +41,6 @@ describe('Sequelize Blueprint User', function(){
         });
     });
 
-
     it('Create an image for the user', function(done){
         request(sails.hooks.http.app)
         .post('/image')
@@ -65,7 +64,7 @@ describe('Sequelize Blueprint User', function(){
     it('Add an image to a user', function(done){
         request(sails.hooks.http.app)
         .post('/user/1/images/add')
-        .send({ url: 'http:imageadded.com/image.png' })
+        .send({ url: 'a.png' })
         .expect(200)
         .end(function(err, response){
             if(err)
@@ -85,6 +84,33 @@ describe('Sequelize Blueprint User', function(){
                 return done(err);
 
             response.body.should.be.an.instanceOf(Array);
+            done();
+        });
+    });
+
+    it('Get an sigle image from a user', function(done){
+        request(sails.hooks.http.app)
+        .get('/user/1/images/1')
+        .expect(200)
+        .end(function(err, response){
+            if(err)
+                return done(err);
+
+            response.body.should.have.length(1);
+            response.body[0].should.have.a.property('url');
+            done();
+        });
+    });
+
+    it('List images sorted by url', function(done){
+        request(sails.hooks.http.app)
+        .get('/user/1/images/?sort=url')
+        .expect(200)
+        .end(function(err, response){
+            if(err)
+                return done(err);
+
+            response.body[0].url.should.be.exactly('a.png');
             done();
         });
     });
