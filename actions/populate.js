@@ -41,14 +41,21 @@ module.exports = function expand(req, res) {
 
   // Coerce the child PK to an integer if necessary
   if (childPk) {
-    if (Model.attributes[Model.primaryKey].type == 'integer') {
+    if (Model.attributes[Model.primaryKeys.id.fieldName].type == 'integer') {
       childPk = +childPk || 0;
     }
   }
 
-  Model
-    .findById(parentPk, { include: [{ all: true }] })
-    .then(function(matchingRecord) {
+  var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
+
+  Model.findById(parentPk, {
+        include: [{
+          all: true,
+          limit: actionUtil.parseLimit(req),
+          order: actionUtil.parseSort(req),
+          where: where
+        }]
+    }).then(function(matchingRecord) {
       if (!matchingRecord) return res.notFound('No record found with the specified id.');
       if (!matchingRecord[relation]) return res.notFound(util.format('Specified record (%s) is missing relation `%s`', parentPk, relation));
 
