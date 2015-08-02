@@ -43,7 +43,7 @@ module.exports = function addToCollection (req, res) {
   // the primary key attribute.
   var foreign = Model.associations[relation].options.foreignKey;
   var associationAttr = foreign.name || foreign;
-  var ChildModel = sails.models[req.options.target];
+  var ChildModel = sails.models[req.options.target.toLowerCase()];
   var childPkAttr = ChildModel.primaryKeys.id.fieldName;
   // The child record to associate is defined by either...
   var child;

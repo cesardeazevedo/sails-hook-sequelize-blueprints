@@ -30,7 +30,7 @@ module.exports = function remove(req, res) {
   // Get the model class of the child in order to figure out the name of
   // the primary key attribute.
   var foreign = Model.associations[relation].options.foreignKey;
-  var ChildModel = sails.models[req.options.target];
+  var ChildModel = sails.models[req.options.target.toLowerCase()];
   var childPkAttr = ChildModel.primaryKeys.id.fieldName;
 
   // The primary key of the child record to remove
