@@ -30,7 +30,6 @@ module.exports = function remove(req, res) {
   // Get the model class of the child in order to figure out the name of
   // the primary key attribute.
   var foreign = Model.associations[relation].options.foreignKey;
-  var associationAttr = foreign.name || foreign;
   var ChildModel = sails.models[req.options.target];
   var childPkAttr = ChildModel.primaryKeys.id.fieldName;
 
@@ -38,7 +37,7 @@ module.exports = function remove(req, res) {
   // from the aliased collection
   var childPk = actionUtil.parsePk(req);
   var childRemove = {};
-  childRemove[associationAttr] = childPk;
+  childRemove[childPkAttr] = childPk;
 
   if(_.isUndefined(childPk)) {
     return res.serverError('Missing required child PK.');

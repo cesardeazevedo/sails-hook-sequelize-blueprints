@@ -362,7 +362,7 @@ module.exports = function(sails) {
               var alias = foreign.as || foreign.name || foreign;
               var _getAssocRoute = _.partialRight(util.format, baseRestRoute, alias);
               var opts = _.merge({ alias: alias, target: value.target.name }, routeOpts);
-              sails.log('Binding RESTful association blueprint `'+alias+'` for',controllerId);
+              sails.log.silly('Binding RESTful association blueprint `'+alias+'` for',controllerId);
 
               _bindRoute(_getAssocRoute('post %s/:parentid/%s/:id?'), 'add', opts);
               _bindRoute(_getAssocRoute('delete %s/:parentid/%s/:id?'), 'remove', opts);
