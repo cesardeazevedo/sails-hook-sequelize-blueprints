@@ -14,7 +14,11 @@ module.exports = {
     associations: function() {
         image.belongsTo(user, {
             onDelete: 'cascade',
-            foreignKey: 'owner'
+            as: 'owner',
+            foreignKey: {
+                name: 'userId',
+                as: 'owner'
+            }
         });
     },
     options: {

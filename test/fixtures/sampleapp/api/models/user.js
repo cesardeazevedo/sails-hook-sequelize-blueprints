@@ -18,8 +18,9 @@ module.exports = {
     associations: function() {
       user.hasMany(image, {
           onDelete: 'cascade',
+          as: 'images',
           foreignKey: {
-            name: 'owner',
+            name: 'userId',
             as: 'images',
             allowNull: false
           }
