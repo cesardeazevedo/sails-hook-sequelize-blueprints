@@ -44,7 +44,7 @@ describe('Sequelize Blueprint User', function(){
     it('Create an image for the user', function(done){
         request(sails.hooks.http.app)
         .post('/image')
-        .send({ url: 'http:image.com/images.png', owner: 1 })
+        .send({ url: 'http:image.com/images.png', userId: 1 })
         .expect(201, done);
     });
 
@@ -113,6 +113,25 @@ describe('Sequelize Blueprint User', function(){
             response.body[0].url.should.be.exactly('a.png');
             done();
         });
+    });
+
+    it('List images with limit', function(done){
+        request(sails.hooks.http.app)
+        .get('/user/1/images/?limit=1')
+        .expect(200)
+        .end(function(err, response){
+            if(err)
+                return done(err);
+
+            response.body.should.have.length(1);
+            done();
+        });
+    });
+
+    it('List image owner', function(done){
+        request(sails.hooks.http.app)
+        .get('/image/1/owner')
+        .expect(200, done);
     });
 
     it('Remove an image from a user', function(done){
