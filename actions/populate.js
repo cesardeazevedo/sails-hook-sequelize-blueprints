@@ -48,14 +48,19 @@ module.exports = function expand(req, res) {
 
   var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
 
-  Model.findById(parentPk, {
-        include: [{
-          all: true,
-          limit: actionUtil.parseLimit(req),
-          order: actionUtil.parseSort(req),
-          where: where
-        }]
-    }).then(function(matchingRecord) {
+  var populate = sails.util.objCompact({
+    as: relation,
+    model: sails.models[req.options.target.toLowerCase()],
+    order: actionUtil.parseSort(req),
+    where: where
+  });
+
+  // Only get limit whether association type is HasMany
+  if(Model.associations[relation].associationType === 'HasMany')
+    populate.limit = actionUtil.parseLimit(req);
+
+  Model.findById(parentPk, { include: [populate] })
+  .then(function(matchingRecord) {
       if (!matchingRecord) return res.notFound('No record found with the specified id.');
       if (!matchingRecord[relation]) return res.notFound(util.format('Specified record (%s) is missing relation `%s`', parentPk, relation));
 
@@ -65,7 +70,6 @@ module.exports = function expand(req, res) {
         Model.subscribe(req, matchingRecord);
         actionUtil.subscribeDeep(req, matchingRecord);
       }
-
       return res.ok(matchingRecord[relation]);
     }).catch(function(err){
       return res.serverError(err);
