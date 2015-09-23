@@ -58,7 +58,7 @@ module.exports = function updateOneRecord (req, res) {
         req._sails.log.warn(util.format('Unexpected output from `%s.update`.', Model.globalId));
       }
 
-      var updatedRecord = records[0];
+      var updatedRecord = pk;
 
       // If we have the pubsub hook, use the Model's publish method
       // to notify all subscribers about the update.
