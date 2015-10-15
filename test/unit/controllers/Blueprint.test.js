@@ -54,6 +54,12 @@ describe('Sequelize Blueprint User', function(){
         .expect(200, done);
     });
 
+    it('Get single user', function(done){
+        request(sails.hooks.http.app)
+        .get('/user/1')
+        .expect(200, done);
+    });
+
     it('Create an image without an owner', function(done){
         request(sails.hooks.http.app)
         .post('/image')
