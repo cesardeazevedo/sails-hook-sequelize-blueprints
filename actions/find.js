@@ -41,7 +41,7 @@ module.exports = function findRecords (req, res) {
     limit: actionUtil.parseLimit(req),
     offset: actionUtil.parseSkip(req),
     order: actionUtil.parseSort(req),
-    include: [{ all: true }]
+    include: [{ all: sails.config.blueprints.populate }]
   }).then(function(matchingRecords) {
     // Only `.watch()` for new instances of the model if
     // `autoWatch` is enabled.

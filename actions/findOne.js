@@ -22,7 +22,7 @@ module.exports = function findOneRecord (req, res) {
   var Model = actionUtil.parseModel(req);
   var pk = actionUtil.requirePk(req);
 
-  Model.findById(pk, { include: [{ all: true }]}).then(function(matchingRecord) {
+  Model.findById(pk, { include: [{ all: sails.config.blueprints.populate }]}).then(function(matchingRecord) {
     if(!matchingRecord) return res.notFound('No record found with the specified `id`.');
 
     if (sails.hooks.pubsub && req.isSocket) {
