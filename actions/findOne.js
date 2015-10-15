@@ -25,7 +25,7 @@ module.exports = function findOneRecord (req, res) {
   Model.findById(pk, { include: [{ all: true }]}).then(function(matchingRecord) {
     if(!matchingRecord) return res.notFound('No record found with the specified `id`.');
 
-    if (sails.hooks.pubsub && req.isSocket) {
+    if (req._sails.hooks.pubsub && req.isSocket) {
       Model.subscribe(req, matchingRecord);
       actionUtil.subscribeDeep(req, matchingRecord);
     }

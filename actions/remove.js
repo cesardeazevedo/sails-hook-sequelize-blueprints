@@ -30,7 +30,7 @@ module.exports = function remove(req, res) {
   // Get the model class of the child in order to figure out the name of
   // the primary key attribute.
   var foreign = Model.associations[relation].options.foreignKey;
-  var ChildModel = sails.models[req.options.target.toLowerCase()];
+  var ChildModel = req._sails.models[req.options.target.toLowerCase()];
   var childPkAttr = ChildModel.primaryKeys.id.fieldName;
 
   // The primary key of the child record to remove
@@ -58,8 +58,8 @@ module.exports = function remove(req, res) {
 
         // If we have the pubsub hook, use the model class's publish method
         // to notify all subscribers about the removed item
-        if (sails.hooks.pubsub) {
-          Model.publishRemove(parentRecord[Model.primaryKey], relation, childPk, !sails.config.blueprints.mirror && req);
+        if (req._sails.hooks.pubsub) {
+          Model.publishRemove(parentRecord[Model.primaryKey], relation, childPk, !req._sails.config.blueprints.mirror && req);
         }
 
         return res.ok(parentRecord);

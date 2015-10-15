@@ -30,7 +30,7 @@ module.exports = {
    * @return {Query}
    */
   populateEach: function ( query, req ) {
-    var DEFAULT_POPULATE_LIMIT = sails.config.blueprints.defaultLimit || 30;
+    var DEFAULT_POPULATE_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
     var _options = req.options;
     var aliasFilter = req.param('populate');
     var shouldPopulate = _options.populate;
@@ -84,7 +84,7 @@ module.exports = {
 
       // Look up identity of associated model
       var ident = assoc[assoc.type];
-      var AssociatedModel = sails.models[ident];
+      var AssociatedModel = req._sails.models[ident];
 
       if (req.options.autoWatch) {
         AssociatedModel.watch(req);
@@ -288,7 +288,7 @@ module.exports = {
    * @param  {Request} req
    */
   parseLimit: function (req) {
-    var DEFAULT_LIMIT = sails.config.blueprints.defaultLimit || 30;
+    var DEFAULT_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
     var limit = req.param('limit') || (typeof req.options.limit !== 'undefined' ? req.options.limit : DEFAULT_LIMIT);
     if (limit) { limit = +limit; }
     return limit;

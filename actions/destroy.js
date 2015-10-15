@@ -29,8 +29,8 @@ module.exports = function destroyOneRecord (req, res) {
 
     Model.destroy({ where: { id: pk }}).then(function() {
 
-      if (sails.hooks.pubsub) {
-        Model.publishDestroy(pk, !sails.config.blueprints.mirror && req, {previous: record});
+      if (req._sails.hooks.pubsub) {
+        Model.publishDestroy(pk, !req._sails.config.blueprints.mirror && req, {previous: record});
         if (req.isSocket) {
           Model.unsubscribe(req, record);
           Model.retire(record);
