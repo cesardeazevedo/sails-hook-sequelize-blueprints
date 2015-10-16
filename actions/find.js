@@ -34,14 +34,13 @@ module.exports = function findRecords (req, res) {
   if ( actionUtil.parsePk(req) ) {
     return require('./findOne')(req,res);
   }
-
   // Lookup for records that match the specified criteria
   Model.findAll({
     where: actionUtil.parseCriteria(req),
     limit: actionUtil.parseLimit(req),
     offset: actionUtil.parseSkip(req),
     order: actionUtil.parseSort(req),
-    include: [{ all: true }]
+    include: sails.config.blueprints.populate ? [{ all: true }] : []
   }).then(function(matchingRecords) {
     // Only `.watch()` for new instances of the model if
     // `autoWatch` is enabled.

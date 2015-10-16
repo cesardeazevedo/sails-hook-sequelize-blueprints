@@ -17,7 +17,8 @@ module.exports = {
             as: 'owner',
             foreignKey: {
                 name: 'userId',
-                as: 'owner'
+                as: 'owner',
+                allowNull: false
             }
         });
     },
