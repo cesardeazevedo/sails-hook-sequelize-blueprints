@@ -48,9 +48,9 @@ module.exports = function expand(req, res) {
 
   var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
 
-  var populate = sails.util.objCompact({
+  var populate = req._sails.util.objCompact({
     as: relation,
-    model: sails.models[req.options.target.toLowerCase()],
+    model: req._sails.models[req.options.target.toLowerCase()],
     order: actionUtil.parseSort(req),
     where: where
   });
@@ -66,7 +66,7 @@ module.exports = function expand(req, res) {
 
       // Subcribe to instance, if relevant
       // TODO: only subscribe to populated attribute- not the entire model
-      if (sails.hooks.pubsub && req.isSocket) {
+      if (req._sails.hooks.pubsub && req.isSocket) {
         Model.subscribe(req, matchingRecord);
         actionUtil.subscribeDeep(req, matchingRecord);
       }
