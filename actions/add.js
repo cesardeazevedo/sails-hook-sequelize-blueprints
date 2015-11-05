@@ -11,6 +11,9 @@ var async = require('async');
  * post  /:modelIdentity/:id/:collectionAttr/:childid
  *  *    /:modelIdentity/:id/:collectionAttr/add/:childid
  *
+ *  post  /:modelIdentity/:id/:collectionAttr?:childField=Value&childAnotherField=AnotherValue
+ *  *    /:modelIdentity/:id/:collectionAttr/add?:childField=Value&childAnotherField=AnotherValue
+ *
  * Associate one record with the collection attribute of another.
  * e.g. add a Horse named "Jimmy" to a Farm's "animals".
  * If the record being added has a primary key value already, it will
@@ -29,21 +32,29 @@ var async = require('async');
  */
 
 module.exports = function addToCollection (req, res) {
-
   // Ensure a model and alias can be deduced from the request.
   var Model = actionUtil.parseModel(req);
   var relation = req.options.alias;
   if (!relation) {
     return res.serverError(new Error('Missing required route option, `req.options.alias`.'));
   }
-
   // The primary key of the parent record
   var parentPk = req.param('parentid');
   // Get the model class of the child in order to figure out the name of
   // the primary key attribute.
   var foreign = Model.associations[relation].options.foreignKey;
   var associationAttr = foreign.name || foreign;
-  var ChildModel = req._sails.models[req.options.target.toLowerCase()];
+  var ChildModel = sails.models[req.options.target.toLowerCase()];
+  var isManyToManyThrough = false;
+  // check it is a M-M through
+  if (_.has(Model.associations[relation].options, 'through')) {
+    isManyToManyThrough = true;
+    var through = Model.associations[relation].options.through.model;
+    var ThroughModel = sails.models[through.toLowerCase()];
+    var childRelation = Model.associations[relation].options.to;
+    var childForeign = ChildModel.associations[childRelation].options.foreignKey;
+    var childAttr = childForeign.name || childForeign;
+  }
   var childPkAttr = ChildModel.primaryKeys.id.fieldName;
   // The child record to associate is defined by either...
   var child;
@@ -90,23 +101,68 @@ module.exports = function addToCollection (req, res) {
 
       // If the primary key was specified for the child record, we should try to find
       // it before we create it.
-      if (child[childPkAttr]) {
-        ChildModel.findById(child[childPkAttr]).then(function(childRecord) {
-          // Didn't find it?  Then try creating it.
-          if (!childRecord) {return createChild();}
-          // Otherwise use the one we found.
-          return cb(null, childRecord[childPkAttr]);
-        }).catch(function(err){
-          return cb(err);
-        });
-      }
-      // Otherwise, it must be referring to a new thing, so create it.
-      else {
-        return createChild();
+      if (isManyToManyThrough) {
+
+
+
+
+        if (supposedChildPk) {
+          // update just the through model with boths IDS => parentPK + supposedChildPk
+          // needed the name of foreign keys (got parent, gets target)
+          // throughModel update ({ associationAttr: parentPk, targetAttr: supposedChildPk })
+          var create = { };
+          create[associationAttr] = parentPk;
+          create[childAttr] = supposedChildPk;
+          ThroughModel.create(create).then(function(throughModelInstance) {
+              return cb();
+            })
+            .catch(function(err) {
+              return cb(err);
+            });
+        } else {
+          // Otherwise, it must be referring to a new thing, so create it.
+          // and update the through model
+          createChild(function(err, childInstanceId) {
+            if (err) cb(err);
+
+            var create = { };
+            create[associationAttr] = parentPk;
+            create[childAttr] = childInstanceId;
+            ThroughModel.create(create).then(function(throughModelInstance) {
+                return cb();
+              })
+              .catch(function(err) {
+                return cb(err);
+              });
+          });
+        }
+      } else {
+        if (child[childPkAttr]) {
+          ChildModel.findById(child[childPkAttr]).then(function(childRecord) {
+            // if there is no real update, no update
+            // if (childRecord[associationAttr] === parentPk) return cb(null, childRecord[childPkAttr]);
+            // Didn't find it?  Then try creating it.
+            if (!childRecord) {return createChild();}
+            // Otherwise use the one we found.
+            // UPDATE THE CHILD WITH PARENTPK
+            childRecord[associationAttr] = parentPk;
+            childRecord.save().then(function() {
+              return cb(null, childRecord[childPkAttr]);
+            });
+          }).catch(function(err){
+            return cb(err);
+          });
+        }
+        // Otherwise, it must be referring to a new thing, so create it.
+        else {
+          return createChild();
+        }
       }
 
       // Create a new instance and send out any required pubsub messages.
-      function createChild() {
+      function createChild(customCb) {
+
+
         ChildModel.create(child).then(function(newChildRecord){
           if (req._sails.hooks.pubsub) {
             if (req.isSocket) {
@@ -115,20 +171,25 @@ module.exports = function addToCollection (req, res) {
             }
             ChildModel.publishCreate(newChildRecord, !req.options.mirror && req);
           }
-
-          return cb(null, newChildRecord[childPkAttr]);
+          // in case we have to create a child and link it to parent(M-M through scenario)
+          // createChild function should return the instance to be linked
+          // in the through model => customCb
+          return (typeof customCb === 'function') ?
+            customCb(null, newChildRecord[childPkAttr]) : cb(null, newChildRecord[childPkAttr]);
         }).catch(function(err){
           return cb(err);
         });
       }
     }]
-  }, function(err){
-       Model.findById(parentPk, { include: [{ all: true }]}).then(function(matchingRecord){
-         if(!matchingRecord) return res.serverError();
-         if(!matchingRecord[relation]) return res.serverError();
-         return res.ok(matchingRecord);
-       }).catch(function(err){
-           return res.serverError(err);
-       });
+  }, function(err, results){
+    // if (err) return res.negotiate(err);
+
+    Model.findById(parentPk, { include: [{ all: true }] }).then(function(matchingRecord) {
+      if(!matchingRecord) return res.serverError();
+      if(!matchingRecord[relation]) return res.serverError();
+      return res.ok(matchingRecord);
+    }).catch(function(err) {
+      return res.serverError(err);
     });
+  });
 };
