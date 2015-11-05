@@ -1,7 +1,7 @@
 {
-  "name": "sails-hook-sequelize-blueprints-through",
-  "version": "0.0.4",
-  "description": "Sails blueprints with sequelize for M-M through associations",
+  "name": "sails-hook-sequelize-blueprints",
+  "version": "0.0.8",
+  "description": "Sails blueprints with sequelize",
   "main": "index.js",
   "sails": {
     "isHook": true
@@ -14,13 +14,9 @@
     "sequelize",
     "blueprints"
   ],
-  "author": "AGC Partners",
-  "contributors": [{
-    "name": "Beatriz HA",
-    "email": "beaherapa@gmail.com",
-    "name": "Jesus BV",
-    "email": "jjesusbv@gmail.com"
-  }],
+  "author": {
+    "name": "Cesar Augusto D. Azevedo"
+  },
   "license": "MIT",
   "devDependencies": {
     "mocha": "^2.2.5",
@@ -47,10 +43,32 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:AGCPartners/sails-hook-sequelize-blueprints-through.git"
+    "url": "git@github.com:cesardeazevedo/sails-hook-sequelize-blueprints.git"
   },
   "bugs": {
-    "url": "https://github.com/AGCPartners/sails-hook-sequelize-blueprints-through/issues"
+    "url": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints/issues"
   },
-  "homepage": "https://github.com/AGCPartners/sails-hook-sequelize-blueprints-through"
+  "homepage": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints",
+  "gitHead": "c29473b6ab7b3b6febf45083288e8744fa340f1a",
+  "_id": "sails-hook-sequelize-blueprints@0.0.8",
+  "_shasum": "957d31db2e4f6665d69192f8576ad84f84ae4096",
+  "_from": "sails-hook-sequelize-blueprints@0.0.8",
+  "_npmVersion": "2.7.3",
+  "_nodeVersion": "0.12.1",
+  "_npmUser": {
+    "name": "fxcesinha",
+    "email": "cesardeazevedo@outlook.com"
+  },
+  "dist": {
+    "shasum": "957d31db2e4f6665d69192f8576ad84f84ae4096",
+    "tarball": "http://registry.npmjs.org/sails-hook-sequelize-blueprints/-/sails-hook-sequelize-blueprints-0.0.8.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "fxcesinha",
+      "email": "cesardeazevedo@outlook.com"
+    }
+  ],
+  "_resolved": "https://registry.npmjs.org/sails-hook-sequelize-blueprints/-/sails-hook-sequelize-blueprints-0.0.8.tgz",
+  "readme": "ERROR: No README data found!"
 }
