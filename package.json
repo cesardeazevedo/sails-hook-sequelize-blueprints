@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-sequelize-blueprints-through",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Sails blueprints with sequelize for M-M through associations",
   "main": "index.js",
   "sails": {
