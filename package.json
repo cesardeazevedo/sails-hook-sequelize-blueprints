@@ -1,7 +1,7 @@
 {
-  "name": "sails-hook-sequelize-blueprints",
-  "version": "0.0.9",
-  "description": "Sails blueprints with sequelize",
+  "name": "sails-hook-sequelize-blueprints-through",
+  "version": "0.0.2",
+  "description": "Sails blueprints with sequelize for M-M through associations",
   "main": "index.js",
   "sails": {
     "isHook": true
@@ -14,7 +14,13 @@
     "sequelize",
     "blueprints"
   ],
-  "author": "Cesar Augusto D. Azevedo",
+  "author": "AGC Partners",
+  "contributors": [{
+    "name": "Beatriz HA"
+    "email": "beaherapa@gmail.com",
+    "name": "Jesus BV",
+    "email": "jjesusbv@gmail.com"
+  }],
   "license": "MIT",
   "devDependencies": {
     "mocha": "^2.2.5",
@@ -41,10 +47,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:cesardeazevedo/sails-hook-sequelize-blueprints.git"
+    "url": "git@github.com:AGCPartners/sails-hook-sequelize-blueprints-through.git"
   },
   "bugs": {
-    "url": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints/issues"
+    "url": "https://github.com/AGCPartners/sails-hook-sequelize-blueprints-through/issues"
   },
-  "homepage": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints"
+  "homepage": "https://github.com/AGCPartners/sails-hook-sequelize-blueprints-through"
 }

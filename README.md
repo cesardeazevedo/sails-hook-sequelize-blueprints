@@ -16,14 +16,14 @@ $ npm install sails-hook-sequelize --save
 Install this hook with:
 
 ```sh
-$ npm install sails-hook-sequelize-blueprints --save
+$ npm install sails-hook-sequelize-blueprints-through --save
 ```
 
 Sequelize dependencies:
 
 ```sh
 $ npm install --save sequelize
-$ npm install --save pg pg-hstore // in case of PostgreSQL 
+$ npm install --save pg pg-hstore // in case of PostgreSQL
 $ npm install --save continuation-local-storage
 ```
 
