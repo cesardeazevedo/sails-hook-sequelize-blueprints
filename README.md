@@ -94,6 +94,15 @@ module.exports = {
         allowNull: false
       }
     });
+    user.belongsToMany(affiliation, {
+      as: 'affiliations',
+      to: 'users', // must be named as the alias in the related Model
+      through: 'UserAffiliation',
+      foreignKey: {
+        name: 'userId',
+        as: 'affiliations'
+      }
+    });
   },
   options: {
     tableName: 'user',
