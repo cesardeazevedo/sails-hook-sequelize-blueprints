@@ -113,11 +113,6 @@ module.exports = {
 };
 ```
 
-#Credits
-A big thanks to [festo/sailsjs-sequelize-example](https://github.com/festo/sailsjs-sequelize-example) and [Manuel Darveau's answer](https://groups.google.com/forum/#!msg/sailsjs/ALMxbKfnCIo/H2RcRUnnFGE) that turn this possible with thier sequelize implementations.
-
-[Munkacsy.me](http://munkacsy.me/use-sequelize-with-sails-js/)
-
 #Contributions
 
 1. Fork it!
