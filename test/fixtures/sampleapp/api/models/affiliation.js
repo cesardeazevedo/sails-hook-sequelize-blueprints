@@ -25,7 +25,7 @@ module.exports = {
     }
   },
   associations: function() {
-    affiliation.belongsToMany(User, {
+    affiliation.belongsToMany(user, {
       as: 'users',
       to: 'affiliations', // must be named as the alias in the related Model
       through: 'UserAffiliation',
