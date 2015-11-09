@@ -23,7 +23,6 @@ var util = require('util'),
  */
 
 module.exports = function expand(req, res) {
-
   var Model = actionUtil.parseModel(req);
   var relation = req.options.alias;
   if (!relation || !Model) return res.serverError();
@@ -48,9 +47,9 @@ module.exports = function expand(req, res) {
 
   var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
 
-  var populate = req._sails.util.objCompact({
+  var populate = sails.util.objCompact({
     as: relation,
-    model: req._sails.models[req.options.target.toLowerCase()],
+    model: sails.models[req.options.target.toLowerCase()],
     order: actionUtil.parseSort(req),
     where: where
   });
@@ -61,12 +60,20 @@ module.exports = function expand(req, res) {
 
   Model.findById(parentPk, { include: [populate] })
   .then(function(matchingRecord) {
-      if (!matchingRecord) return res.notFound('No record found with the specified id.');
+      if (!matchingRecord) {
+        if(Model.associations[relation].associationType === 'BelongsToMany') {
+          if (_.has(where, 'id')) return res.notFound('No record found with the specified id.');
+
+          return res.send(200, []);
+        } else {
+          return res.notFound('No record found with the specified id.');
+        }
+      }
       if (!matchingRecord[relation]) return res.notFound(util.format('Specified record (%s) is missing relation `%s`', parentPk, relation));
 
       // Subcribe to instance, if relevant
       // TODO: only subscribe to populated attribute- not the entire model
-      if (req._sails.hooks.pubsub && req.isSocket) {
+      if (sails.hooks.pubsub && req.isSocket) {
         Model.subscribe(req, matchingRecord);
         actionUtil.subscribeDeep(req, matchingRecord);
       }

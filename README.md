@@ -23,7 +23,7 @@ Sequelize dependencies:
 
 ```sh
 $ npm install --save sequelize
-$ npm install --save pg pg-hstore // in case of PostgreSQL 
+$ npm install --save pg pg-hstore // in case of PostgreSQL
 $ npm install --save continuation-local-storage
 ```
 
@@ -92,6 +92,15 @@ module.exports = {
       foreignKey: {
         name: 'owner',
         allowNull: false
+      }
+    });
+    user.belongsToMany(affiliation, {
+      as: 'affiliations',
+      to: 'users', // must be named as the alias in the related Model
+      through: 'UserAffiliation',
+      foreignKey: {
+        name: 'userId',
+        as: 'affiliations'
       }
     });
   },
