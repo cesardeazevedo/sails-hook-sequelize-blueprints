@@ -34,7 +34,7 @@
     "pluralize": "^1.1.2",
     "sails-stringfile": "^0.3.2",
     "sails-util": "^0.10.6",
-    "sequelize": "^3.5.1"
+    "sequelize": "3.5.1"
   },
   "directories": {
     "test": "test"
