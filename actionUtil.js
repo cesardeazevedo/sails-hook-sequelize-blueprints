@@ -166,7 +166,7 @@ module.exports = {
 
     // Allow customizable blacklist for params NOT to include as criteria.
     req.options.criteria = req.options.criteria || {};
-    req.options.criteria.blacklist = req.options.criteria.blacklist || ['limit', 'skip', 'sort', 'populate'];
+    req.options.criteria.blacklist = req.options.criteria.blacklist || ['limit', 'skip', 'page', 'perPage', 'sort', 'populate'];
 
     // Validate blacklist to provide a more helpful error msg.
     var blacklist = req.options.criteria && req.options.criteria.blacklist;
@@ -191,7 +191,7 @@ module.exports = {
       where = req.params.all();
 
       // Omit built-in runtime config (like query modifiers)
-      where = _.omit(where, blacklist || ['limit', 'skip', 'sort']);
+      where = _.omit(where, blacklist || ['limit', 'skip', 'sort', 'page', 'perPage']);
 
       // Omit any params w/ undefined values
       where = _.omit(where, function (p){ if (_.isUndefined(p)) return true; });
@@ -294,7 +294,6 @@ module.exports = {
     return limit;
   },
 
-
   /**
    * @param  {Request} req
    */
@@ -303,6 +302,26 @@ module.exports = {
     var skip = req.param('skip') || (typeof req.options.skip !== 'undefined' ? req.options.skip : DEFAULT_SKIP);
     if (skip) { skip = +skip; }
     return skip;
+  },
+
+  /**
+   * @param  {Request} req
+   */
+  parsePerPage: function (req) {
+    var DEFAULT_PER_PAGE = req._sails.config.blueprints.defaultLimit || 25;
+    var perPage = req.param('perPage') || (typeof req.options.perPage !== 'undefined' ? req.options.perPage : DEFAULT_PER_PAGE);
+    if (perPage) { perPage = +perPage; }
+    return perPage;
+  },
+
+  /**
+   * @param  {Request} req
+  */
+  parsePage: function (req) {
+    var DEFAULT_PAGE = 1;
+    var page = req.param('page') || (typeof req.options.page !== 'undefined' ? req.options.page : DEFAULT_PAGE);
+    if (page) { page = +page; }
+    return page;
   }
 };
 
