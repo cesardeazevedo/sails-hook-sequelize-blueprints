@@ -140,6 +140,33 @@ describe('Sequelize Blueprint User', function(){
         .expect(200, done);
     });
 
+    it('Populate pet', function(done){
+        request(sails.hooks.http.app)
+        .get('/user/?populate=pet')
+        .expect(200)
+        .end(function(err, response){
+          if(err)
+            return done(err);
+
+          response.body[0].should.have.property('pets');
+          done();
+        });
+    });
+
+    it('Populate pet and image', function(done){
+        request(sails.hooks.http.app)
+        .get('/user/?populate=[pet,image]')
+        .expect(200)
+        .end(function(err, response){
+          if(err)
+            return done(err);
+
+          response.body[0].should.have.property('pets');
+          response.body[0].should.have.property('images');
+          done();
+        });
+    });
+
     it('Remove an image from a user', function(done){
         request(sails.hooks.http.app)
         .delete('/user/1/images/remove/1')
