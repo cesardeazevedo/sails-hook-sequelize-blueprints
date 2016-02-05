@@ -52,7 +52,8 @@ module.exports.blueprints = {
   restPrefix: '',
   pluralize: false,
   populate: true,
-  defaultLimit: 25,
+  defaultLimit: 30,
+  populateLimit: 30,
   autoWatch: true,
 }
 ```
