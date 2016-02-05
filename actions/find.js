@@ -35,7 +35,8 @@ module.exports = function findRecords (req, res) {
   var limit = actionUtil.parseLimit(req),
     offset = actionUtil.parseSkip(req),
     page = actionUtil.parsePage(req),
-    perPage = actionUtil.parsePerPage(req);
+    perPage = actionUtil.parsePerPage(req),
+    populate = actionUtil.populateEach(req);
 
   if(page && perPage){
     limit = perPage;
@@ -55,7 +56,8 @@ module.exports = function findRecords (req, res) {
     limit: limit,
     offset: offset,
     order: actionUtil.parseSort(req),
-    include: req._sails.config.blueprints.populate ? [{ all: true }] : []
+    include: req._sails.config.blueprints.populate ?
+             (_.isEmpty(populate) ? [{ all : true}] : populate) : []
   }).then(function(matchingRecords) {
     // Only `.watch()` for new instances of the model if
     // `autoWatch` is enabled.

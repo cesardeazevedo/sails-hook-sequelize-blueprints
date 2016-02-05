@@ -1,7 +1,8 @@
 /**
  * Module dependencies
  */
-var actionUtil = require('../actionUtil');
+var actionUtil = require('../actionUtil'),
+  _ = require('lodash');
 
 /**
  * Find One Record
@@ -21,7 +22,10 @@ var actionUtil = require('../actionUtil');
 module.exports = function findOneRecord (req, res) {
   var Model = actionUtil.parseModel(req);
   var pk = actionUtil.requirePk(req);
-  Model.findById(pk, {include: req._sails.config.blueprints.populate ? [{ all: true }] : []
+  var populate = actionUtil.populateEach(req);
+
+  Model.findById(pk, {include: req._sails.config.blueprints.populate ?
+                               (_.isEmpty(populate) ? [{ all : true}] : populate) : []
   }).then(function(matchingRecord) {
     if(!matchingRecord) return res.notFound('No record found with the specified `id`.');
 

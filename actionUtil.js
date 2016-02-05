@@ -21,19 +21,17 @@ var JSONP_CALLBACK_PARAM = 'callback';
 module.exports = {
 
   /**
-   * Given a Waterline query, populate the appropriate/specified
-   * association attributes and return it so it can be chained
-   * further ( i.e. so you can .exec() it )
+   * Given a request, return an object with appropriate/specified
+   * association attributes ( i.e. [{ model: Pet, as: 'pets' }] )
    *
-   * @param  {Query} query         [waterline query object]
    * @param  {Request} req
-   * @return {Query}
+   * @return {Object}
    */
-  populateEach: function ( query, req ) {
+  populateEach: function (req) {
     var DEFAULT_POPULATE_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
-    var _options = req.options;
     var aliasFilter = req.param('populate');
-    var shouldPopulate = _options.populate;
+    var associations = [];
+    var parentModel = req.options.model;
 
     // Convert the string representation of the filter list to an Array. We
     // need this to provide flexibility in the request param. This way both
@@ -45,31 +43,22 @@ module.exports = {
       aliasFilter = (aliasFilter) ? aliasFilter.split(',') : [];
     }
 
-    return _(_options.associations).reduce(function populateEachAssociation (query, association) {
+    _.each(aliasFilter, function(association){
+      var childModel = sails.models[association.toLowerCase()];
+      // iterate through parent model associations
+      _.each(sails.models[parentModel].associations, function(relation){
+        // check if association match childModel name
+        if(relation.target.name === childModel.name) {
+          associations.push({ model: childModel,
+                              as: relation.options.as,
+                              limit: req._sails.config.blueprints.populateLimit ||
+                                     DEFAULT_POPULATE_LIMIT
+          });
+        }
+      });
+    });
 
-      // If an alias filter was provided, override the blueprint config.
-      if (aliasFilter) {
-        shouldPopulate = _.contains(aliasFilter, association.alias);
-      }
-
-      // Only populate associations if a population filter has been supplied
-      // with the request or if `populate` is set within the blueprint config.
-      // Population filters will override any value stored in the config.
-      //
-      // Additionally, allow an object to be specified, where the key is the
-      // name of the association attribute, and value is true/false
-      // (true to populate, false to not)
-      if (shouldPopulate) {
-        var populationLimit =
-          _options['populate_'+association.alias+'_limit'] ||
-          _options.populate_limit ||
-          _options.limit ||
-          DEFAULT_POPULATE_LIMIT;
-
-        return query.populate(association.alias, {limit: populationLimit});
-      }
-      else return query;
-    }, query);
+    return associations;
   },
 
   /**
