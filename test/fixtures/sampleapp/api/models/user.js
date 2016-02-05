@@ -25,6 +25,13 @@ module.exports = {
             allowNull: false
           }
       });
+      user.hasMany(pet, {
+          as: 'pets',
+          foreignKey: {
+              name: 'userId',
+              as: 'pets'
+          }
+      });
       user.belongsToMany(affiliation, {
         as: 'affiliations',
         to: 'users', // must be named as the alias in the related Model
