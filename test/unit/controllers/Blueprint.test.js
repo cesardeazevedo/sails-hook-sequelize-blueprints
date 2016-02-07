@@ -25,6 +25,21 @@ describe('Sequelize Blueprint User', function(){
         });
     });
 
+    it('Create a pet', function(done){
+        request(sails.hooks.http.app)
+        .post('/pet')
+        .send({ name: 'Max', breed: 'bulldog', userId: user.id })
+        .expect(201)
+        .end(function(err, response){
+            if(err) {
+                return done(err);
+            }
+
+            response.body.should.be.type('object').and.have.property('name', 'Max');
+            done();
+        });
+    });
+
     it('Update a user', function(done){
         request(sails.hooks.http.app)
         .put('/user/'+user.id)
@@ -149,6 +164,19 @@ describe('Sequelize Blueprint User', function(){
             return done(err);
 
           response.body[0].should.have.property('pets');
+          done();
+        });
+    });
+
+    it('Populate user from pet', function(done){
+        request(sails.hooks.http.app)
+        .get('/pet?populate=user')
+        .expect(200)
+        .end(function(err, response){
+          if(err)
+            return done(err);
+
+          response.body[0].should.have.property('owner');
           done();
         });
     });
