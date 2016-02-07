@@ -29,7 +29,7 @@ module.exports = {
           as: 'pets',
           foreignKey: {
               name: 'userId',
-              as: 'pets'
+              as: 'pets',
           }
       });
       user.belongsToMany(affiliation, {
