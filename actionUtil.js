@@ -49,11 +49,11 @@ module.exports = {
       _.each(sails.models[parentModel].associations, function(relation){
         // check if association match childModel name
         if(relation.target.name === childModel.name) {
-          associations.push({ model: childModel,
-                              as: relation.options.as,
-                              limit: req._sails.config.blueprints.populateLimit ||
-                                     DEFAULT_POPULATE_LIMIT
-          });
+          var obj = { model: childModel, as: relation.options.as };
+          if(relation.associationType === 'HasMany') {
+            obj.limit = req._sails.config.blueprints.populateLimit || DEFAULT_POPULATE_LIMIT;
+          }
+          associations.push(obj);
         }
       });
     });
