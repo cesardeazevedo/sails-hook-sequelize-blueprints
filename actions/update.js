@@ -74,7 +74,7 @@ module.exports = function updateOneRecord (req, res) {
       // (Note: again, this extra query could be eliminated, but it is
       //  included by default to provide a better interface for integrating
       //  front-end developers.)
-      var Q = Model.findById(updatedRecord, {include: req.options.includeAllAfterUpdate ? [{ all: true }] : []
+      var Q = Model.findById(updatedRecord, {include: req.options.includeAllAfterUpdate ? [{ all: true }] : []})
       .then(function(populatedRecord) {
         if (!populatedRecord) return res.serverError('Could not find record after updating!');
         res.ok(populatedRecord);
