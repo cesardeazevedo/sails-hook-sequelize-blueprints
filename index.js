@@ -96,6 +96,9 @@ module.exports = function(sails) {
         // Whether to run `Model.watch()` in the `find` blueprint action.
         autoWatch: true,
 
+        // Whether to include or not all the associations of the record
+        includeAllAfterUpdate: true,
+
 
         // (TODO: generated comments for jsonp configuration needs to be updated w/ new options)
         // (TODO: need to mention new `req.options` stuff in generated comments)
