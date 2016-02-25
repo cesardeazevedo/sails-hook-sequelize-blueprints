@@ -70,11 +70,7 @@ module.exports = function updateOneRecord (req, res) {
       }
 
       // Do a final query to populate the associations of the record.
-      //
-      // (Note: again, this extra query could be eliminated, but it is
-      //  included by default to provide a better interface for integrating
-      //  front-end developers.)
-      var Q = Model.findById(updatedRecord, { include: [{ all: true }]})
+      var Q = Model.findById(updatedRecord)
       .then(function(populatedRecord) {
         if (!populatedRecord) return res.serverError('Could not find record after updating!');
         res.ok(populatedRecord);
