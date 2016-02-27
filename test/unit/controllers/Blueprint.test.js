@@ -40,7 +40,7 @@ describe('Sequelize Blueprint User', function(){
         });
     });
 
-    it('Update a user', function(done){
+    it('Should update user name and populate all relations', function(done){
         request(sails.hooks.http.app)
         .put('/user/'+user.id)
         .send({ name: 'TesterEdited' })
@@ -51,10 +51,34 @@ describe('Sequelize Blueprint User', function(){
             }
 
             response.body.should.be.type('object').and.have.property('name', 'TesterEdited');
+            response.body.should.be.type('object').and.have.property('pets');
+            response.body.should.be.type('object').and.have.property('images');
             user.id = response.body.id;
             done();
         });
     });
+
+    it('Should update a user and not return relations', function(done){
+        sails.config.blueprints.populate = false;
+
+        request(sails.hooks.http.app)
+        .put('/user/'+user.id)
+        .send({ name: 'TesterEdited 2' })
+        .expect(200)
+        .end(function(err, response){
+            if(err) {
+                return done(err);
+            }
+
+            response.body.should.be.type('object').and.have.property('name', 'TesterEdited 2');
+            response.body.should.be.type('object').and.not.have.property('pets');
+            response.body.should.be.type('object').and.not.have.property('images');
+            user.id = response.body.id;
+
+            sails.config.blueprints.populate = true;
+            done();
+        });
+    })
 
     it('Create an image for the user', function(done){
         request(sails.hooks.http.app)
@@ -195,16 +219,74 @@ describe('Sequelize Blueprint User', function(){
         });
     });
 
-    it('Remove an image from a user', function(done){
+    it('Should get a user and not return relations', function(done){
+        sails.config.blueprints.populate = false;
+
+        request(sails.hooks.http.app)
+        .get('/user')
+        .expect(200)
+        .end(function(err, response){
+          if(err)
+            return done(err);
+
+          response.body[0].should.not.have.property('pets');
+          response.body[0].should.not.have.property('images');
+
+          sails.config.blueprints.populate = true;
+          done();
+        });
+    });
+
+
+    it('Remove an image from a user without relations', function(done){
+        sails.config.blueprints.populate = false;
+
         request(sails.hooks.http.app)
         .delete('/user/1/images/remove/1')
         .expect(200)
-        .end(done);
+        .end(function(err, response){
+          if(err)
+            return done(err);
+
+          response.body.should.not.have.property('images');
+          response.body.should.not.have.property('pets');
+
+          sails.config.blueprints.populate = true;
+          done();
+        });
     });
 
-    it('Delete an user', function(done){
+    it('Should delete a pet without return the owner', function(done){
+        sails.config.blueprints.populate = false;
+
+        request(sails.hooks.http.app)
+        .delete('/pet/1')
+        .expect(200)
+        .end(function(err, response){
+          if(err)
+            return done(err);
+
+          response.body.should.not.have.property('owner');
+
+          sails.config.blueprints.populate = true;
+          done();
+        });
+    });
+
+    it('Delete an user and return the deleted record with all relations', function(done){
+        sails.config.blueprints.populate = true;
+
         request(sails.hooks.http.app)
         .delete('/user/1')
-        .expect(200, done);
+        .expect(200)
+        .end(function(err, response){
+          if(err)
+            return done(err);
+
+          response.body.should.have.property('pets');
+          response.body.should.have.property('images');
+
+          done();
+        });
     });
 });
