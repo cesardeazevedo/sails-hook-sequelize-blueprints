@@ -79,12 +79,11 @@ module.exports = function remove(req, res) {
   });
 
   function returnParentModel () {
-    Model.findById(parentPk, { include: [{ all: true }] })
+    Model.findById(parentPk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : [] })
     // .populate(relation)
     // TODO: use populateEach util instead
     .then(function(parentRecord) {
       if (!parentRecord) return res.serverError();
-      if (!parentRecord[relation]) return res.serverError();
       if (!parentRecord[Model.primaryKeys.id.fieldName]) return res.serverError();
 
       // If we have the pubsub hook, use the model class's publish method

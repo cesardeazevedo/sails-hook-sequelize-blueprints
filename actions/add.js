@@ -184,9 +184,8 @@ module.exports = function addToCollection (req, res) {
   }, function(err, results){
     // if (err) return res.negotiate(err);
 
-    Model.findById(parentPk, { include: [{ all: true }] }).then(function(matchingRecord) {
+    Model.findById(parentPk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []}).then(function(matchingRecord) {
       if(!matchingRecord) return res.serverError();
-      if(!matchingRecord[relation]) return res.serverError();
       return res.ok(matchingRecord);
     }).catch(function(err) {
       return res.serverError(err);
