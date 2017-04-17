@@ -6,7 +6,7 @@ Sails blueprints for sequelize ORM
 
 The blueprints waterline replaced with sequelize.
 
-#Install
+# Install
 
 Install [sails-hook-sequelize](https://github.com/festo/sails-hook-sequelize) first:
 ```sh
@@ -30,7 +30,8 @@ $ npm install --save continuation-local-storage
 # Configuration
 
 `.sailsrc`
-````
+
+```
 "hooks": {
   "blueprints": false,
   "orm": false,
@@ -115,12 +116,12 @@ module.exports = {
 };
 ```
 
-#Credits
+# Credits
 A big thanks to [festo/sailsjs-sequelize-example](https://github.com/festo/sailsjs-sequelize-example) and [Manuel Darveau's answer](https://groups.google.com/forum/#!msg/sailsjs/ALMxbKfnCIo/H2RcRUnnFGE) that turn this possible with thier sequelize implementations.
 
 [Munkacsy.me](http://munkacsy.me/use-sequelize-with-sails-js/)
 
-#Contributions
+# Contributions
 
 1. Fork it!
 2. Create your feature branch: git checkout -b my-new-feature
@@ -128,5 +129,5 @@ A big thanks to [festo/sailsjs-sequelize-example](https://github.com/festo/sails
 4. Push to the branch: git push origin my-new-feature
 5. Submit a pull request
 
-#License
+# License
 [MIT](./LICENSE)
