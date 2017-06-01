@@ -62,7 +62,7 @@ module.exports.blueprints = {
 ## Connections
 Sequelize connection
 ```javascript
-somePostgresqlServer: {
+undefined: {
   user: 'postgres',
   password: '',
   database: 'sequelize',
