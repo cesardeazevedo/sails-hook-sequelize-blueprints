@@ -24,6 +24,10 @@ module.exports = function findOneRecord (req, res) {
   var pk = actionUtil.requirePk(req);
   var populate = actionUtil.populateEach(req);
 
+  if ( pk === 'count' ) {
+    return require('./find')(req,res);
+  }
+
   Model.findById(pk, {include: req._sails.config.blueprints.populate ?
                                (_.isEmpty(populate) ? [{ all : true}] : populate) : []
   }).then(function(matchingRecord) {
