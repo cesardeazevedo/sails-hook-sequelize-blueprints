@@ -102,7 +102,9 @@ module.exports = {
    */
   parsePk: function ( req ) {
 
-    var pk = req.options.id || (req.options.where && req.options.where.id) || req.param('id');
+    var pk = req.options.id 
+            || (req.options.where && req.options.where.id) 
+            || req.param('id');
 
     // TODO: make this smarter...
     // (e.g. look for actual primary key of model and look for it
@@ -114,6 +116,22 @@ module.exports = {
     return pk;
   },
 
+  /**
+   * Parse count key value for use in a Waterline criteria
+   * (e.g. for `find`, `update`, or `destroy`)
+   *
+   * @param  {Request} req
+   * @return {Integer|String}
+   */
+  parseCount: function ( req ) {
+    
+    var pk = req.options.id 
+            || (req.options.where && req.options.where.id) 
+            || req.param('id');
+
+    // exclude criteria on id field
+    return (pk === 'count');
+  },
 
 
   /**
@@ -127,7 +145,7 @@ module.exports = {
     var pk = module.exports.parsePk(req);
 
     // Validate the required `id` parameter
-    if ( !pk ) {
+    if ( !pk  && pk != 'count') {
 
       var err = new Error(
       'No `id` parameter provided.'+
@@ -195,6 +213,11 @@ module.exports = {
 
     // Merge w/ req.options.where and return
     where = _.merge({}, req.options.where || {}, where) || undefined;
+
+    // Removing ID if is counting action
+    if (where && where.id && where.id === 'count'){
+      delete where.id;
+    } 
 
     return where;
   },
@@ -297,7 +320,7 @@ module.exports = {
    * @param  {Request} req
    */
   parsePerPage: function (req) {
-    var DEFAULT_PER_PAGE = req._sails.config.blueprints.defaultLimit || 25;
+    var DEFAULT_PER_PAGE = req._sails.config.blueprints.defaultLimit || undefined;
     var perPage = req.param('perPage') || (typeof req.options.perPage !== 'undefined' ? req.options.perPage : DEFAULT_PER_PAGE);
     if (perPage) { perPage = +perPage; }
     return perPage;

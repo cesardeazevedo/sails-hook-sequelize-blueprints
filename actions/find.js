@@ -35,11 +35,12 @@ module.exports = function findRecords (req, res) {
   var limit = actionUtil.parseLimit(req),
     offset = actionUtil.parseSkip(req),
     page = actionUtil.parsePage(req),
+    count = actionUtil.parsePk(req),
     perPage = actionUtil.parsePerPage(req),
     populate = actionUtil.populateEach(req);
 
   if(page && perPage){
-    limit = perPage;
+    limit = (limit && limit < perPage) ? limit: perPage;
     offset = (page - 1) * (perPage + 1);
   }
 
@@ -47,11 +48,12 @@ module.exports = function findRecords (req, res) {
   // to grab the particular instance with its primary key === the value
   // of the `id` param.   (mainly here for compatibility for 0.9, where
   // there was no separate `findOne` action)
-  if ( actionUtil.parsePk(req) ) {
+  var pk = actionUtil.parsePk(req);
+  if ( pk && pk != 'count') {
     return require('./findOne')(req,res);
   }
   // Lookup for records that match the specified criteria
-  Model.findAll({
+  Model.findAndCountAll({
     where: actionUtil.parseCriteria(req),
     limit: limit,
     offset: offset,
@@ -62,15 +64,26 @@ module.exports = function findRecords (req, res) {
     // Only `.watch()` for new instances of the model if
     // `autoWatch` is enabled.
     if (req._sails.hooks.pubsub && req.isSocket) {
-      Model.subscribe(req, matchingRecords);
+      Model.subscribe(req, matchingRecords.rows);
       if (req.options.autoWatch) { Model.watch(req); }
       // Also subscribe to instances of all associated models
-      _.each(matchingRecords, function (record) {
+      _.each(matchingRecords.rows, function (record) {
         actionUtil.subscribeDeep(req, record);
       });
     }
 
-    res.ok(matchingRecords);
+    var resObj = {
+      items: matchingRecords.rows,
+      page: page || undefined,
+      offset: offset || undefined,
+      limit: limit || undefined,
+      total: count ? matchingRecords.count : undefined
+    }
+
+    if (!count)
+      res.ok(resObj.items);
+    else
+      res.ok(resObj);
   }).catch(function(err){
     return res.serverError(err);
   });
